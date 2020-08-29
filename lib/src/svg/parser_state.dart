@@ -700,8 +700,10 @@ class SvgParserState {
   /// Creates a new [SvgParserState].
   SvgParserState(Iterable<XmlEvent> events, this._key)
       : assert(events != null), // ignore: unnecessary_null_comparison
+        _events = events,
         _eventIterator = events.iterator;
 
+  final Iterable<XmlEvent> _events;
   final Iterator<XmlEvent> _eventIterator;
   final String? _key;
   final DrawableDefinitionServer _definitions = DrawableDefinitionServer();
@@ -773,6 +775,20 @@ class SvgParserState {
 
   /// Drive the [XmlTextReader] to EOF and produce a [DrawableRoot].
   Future<DrawableRoot> parse() async {
+    // first find defs block
+    bool findDefs = false;
+    for (XmlEvent event in _readSubtree()) {
+      if (event is XmlStartElementEvent) {
+        if (event.name == 'defs') {
+          findDefs = !findDefs;
+        }
+        if (findDefs) {
+          final _ParseFunc parseFunc = _svgElementParsers[event.name];
+          await parseFunc?.call(this);
+        }
+      }
+    }
+    _eventIterator = _events.iterator;
     for (XmlEvent event in _readSubtree()) {
       if (event is XmlStartElementEvent) {
         if (startElement(event)) {
