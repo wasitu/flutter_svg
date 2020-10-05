@@ -17,7 +17,7 @@ final Paint _grayscaleDstInPaint = Paint()
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
-    // this line cause mask transparency problems.
+    // this line cause mask transparency problem
     // 0.2126, 0.7152, 0.0722, 0, 0,
     1, 1, 1, 0, 0,
   ]); //convert to grayscale (https://www.w3.org/Graphics/Color/sRGB) and use them as transparency
