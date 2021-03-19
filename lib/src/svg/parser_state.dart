@@ -704,7 +704,6 @@ class SvgParserState {
         _eventIterator = events.iterator;
 
   final Iterable<XmlEvent> _events;
-  final Iterator<XmlEvent> _eventIterator;
   final String? _key;
   final DrawableDefinitionServer _definitions = DrawableDefinitionServer();
   final Queue<_SvgGroupTuple> _parentDrawables = ListQueue<_SvgGroupTuple>(10);
@@ -712,6 +711,7 @@ class SvgParserState {
   bool _inDefs = false;
   List<XmlEventAttribute>? _currentAttributes;
   XmlStartElementEvent? _currentStartElement;
+  Iterator<XmlEvent> _eventIterator;
 
   /// The current depth of the reader in the XML hierarchy.
   int depth = 0;
@@ -783,7 +783,7 @@ class SvgParserState {
           findDefs = !findDefs;
         }
         if (findDefs) {
-          final _ParseFunc parseFunc = _svgElementParsers[event.name];
+          final _ParseFunc? parseFunc = _svgElementParsers[event.name];
           await parseFunc?.call(this);
         }
       }
